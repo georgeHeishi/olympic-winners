@@ -58,5 +58,16 @@ class Person
         return $this->discipline;
     }
 
+    public function toArray()
+    {
+        return array(
+            "name" => $this->name,
+            "surname" => $this->surname,
+            "year" => $this->year,
+            "city" => $this->city,
+            "type" => $this->type,
+            "discipline" => $this->discipline);
+
+    }
 
 }
