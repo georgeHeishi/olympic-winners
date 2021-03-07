@@ -8,7 +8,7 @@ $order = $_GET['order'];
 $db = new Database();
 $conn = $db->getConnection();
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$stm = $conn->prepare("SELECT osoby.name AS name, osoby.surname AS surname, oh.year AS year, oh.city AS city, oh.type AS type, umiestnenia.discipline AS discipline
+$stm = $conn->prepare("SELECT osoby.id, osoby.name AS name, osoby.surname AS surname, oh.year AS year, oh.city AS city, oh.type AS type, umiestnenia.discipline AS discipline
                              FROM osoby
                                 JOIN umiestnenia
                                     on osoby.id = umiestnenia.person_id

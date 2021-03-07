@@ -24,23 +24,23 @@ document.addEventListener("DOMContentLoaded", () => {
                     JSON.parse(data.results).forEach(item => {
                         let innerHTML =
                             "<tr>" +
+                                "<td><a href='/olympic-winners/detail.php/?id=" +item.id+ "'>" +
+                                    item.name +
+                                "</a></td>" +
+                                "<td<a href='/olympic-winners/detail.php/?id=" +item.id+ "'>" +
+                                    item.surname +
+                                "</a></td>" +
                                 "<td>" +
-                                item.name +
+                                    item.year +
                                 "</td>" +
                                 "<td>" +
-                                item.surname +
+                                    item.city +
                                 "</td>" +
                                 "<td>" +
-                                item.year +
+                                    item.type +
                                 "</td>" +
                                 "<td>" +
-                                item.city +
-                                "</td>" +
-                                "<td>" +
-                                item.type +
-                                "</td>" +
-                                "<td>" +
-                                item.discipline +
+                                    item.discipline +
                                 "</td>" +
                             "</tr>";
                         body.innerHTML += innerHTML;

@@ -6,7 +6,7 @@ $db = new Database();
 
 $conn = $db->getConnection();
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$stm = $conn->prepare("SELECT osoby.name, osoby.surname, oh.year, oh.city, oh.type, umiestnenia.discipline
+$stm = $conn->prepare("SELECT osoby.id, osoby.name, osoby.surname, oh.year, oh.city, oh.type, umiestnenia.discipline
                              FROM osoby
                                 JOIN umiestnenia
                                     on osoby.id = umiestnenia.person_id
@@ -73,24 +73,26 @@ $people = $stm->fetchAll();
                 foreach ($people as $person) {
                     echo "
                     <tr>
+                        <td><a href='/olympic-winners/detail.php/?id=".$person->getId()."'>" .
+                            $person->getName() . " " . $person->getSurname() .
+                            "</a>
+                        </td>
+                        <td><a href='/olympic-winners/detail.php/?id=".$person->getId()."'>" .
+                            $person->getSurname() .
+                            "</a>
+                        </td>
+                        <td>".
+                            $person->getYear() .
+                        "</td>
                         <td>" .
-                                    $person->getName() . " " . $person->getSurname() .
-                                    "</td>
+                            $person->getCity() .
+                        "</td>
                         <td>" .
-                                    $person->getSurname() .
-                                    "</td>
+                            $person->getType() .
+                        "</td>
                         <td>" .
-                                    $person->getYear() .
-                                    "</td>
-                        <td>" .
-                                    $person->getCity() .
-                                    "</td>
-                        <td>" .
-                                    $person->getType() .
-                                    "</td>
-                        <td>" .
-                                    $person->getDiscipline() .
-                                    "</td>
+                            $person->getDiscipline() .
+                        "</td>
                         <td></td>
                     </tr>
                     ";
