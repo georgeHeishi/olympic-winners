@@ -1,22 +1,22 @@
 <?php
 require_once "helpers/Database.php";
-require_once "models/Person.php";
+require_once "models/PersonRanking.php";
+
 
 $db = new Database();
-
 $conn = $db->getConnection();
 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$stm = $conn->prepare("SELECT osoby.id, osoby.name, osoby.surname, oh.year, oh.city, oh.type, umiestnenia.discipline
-                            FROM osoby
-                            JOIN umiestnenia
-                            on osoby.id = umiestnenia.person_id
-                            JOIN oh
-                            on umiestnenia.oh_id = oh.id
-                            WHERE birth_country = 'Slovensko'");
+$stm = $conn->prepare("SELECT umiestnenia.person_id AS id,osoby.name AS name, osoby.surname AS surname, COUNT(placing) as placings
+    FROM umiestnenia
+    RIGHT JOIN osoby on umiestnenia.person_id = osoby.id
+    WHERE placing=1
+    GROUP BY  person_id
+    ORDER BY COUNT(placing)
+    DESC LIMIT 10;");
 $stm->execute();
 
-$stm->setFetchMode(PDO::FETCH_CLASS, "Person");
-$people = $stm->fetchAll();
+$stm->setFetchMode(PDO::FETCH_CLASS, "PersonRanking");
+$peopleRanking = $stm->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="sk">
@@ -42,58 +42,47 @@ $people = $stm->fetchAll();
     </div>
     <div class="row mt-5">
         <main class="col-lg site-content">
-            <div class="mb-5">
-                <a href="/olympic-winners/best10.php">Top 10</a>
-            </div>
             <table class="table table-striped table-dark">
                 <thead>
                 <tr class="table-head">
+                    <!--                    <th scope="col" id="name" class="winners-head">-->
+                    <!--                        Meno-->
+                    <!--                    </th>-->
                     <th scope="col" id="name" class="winners-head">
-                        Meno &#8593;&#8595;
+                        Meno
                     </th>
                     <th scope="col" id="surname" class="winners-head">
-                        Priezvisko &#8593;&#8595;
+                        Priezvisko
                     </th>
-                    <th scope="col" id="year" class="winners-head">
-                        Rok konania &#8593;&#8595;
+                    <th scope="col" id="wins" class="winners-head">
+                        Počet výher
                     </th>
-                    <th scope="col" id="city" class="winners-head">
-                        Miesto konania &#8593;&#8595;
+                    <th scope="col" id="action1" class="winners-head">
                     </th>
-                    <th scope="col" id="type" class="winners-head">
-                        Typ olympiády &#8593;&#8595;
-                    </th>
-                    <th scope="col" id="discipline" class="winners-head">
-                        Disciplína &#8593;&#8595;
+                    <th scope="col" id="action1" class="winners-head">
                     </th>
                 </tr>
                 </thead>
                 <tbody id="winners-body">
                 <?php
-                foreach ($people as $person) {
+                foreach ($peopleRanking as $person) {
                     echo "
                     <tr>
-                        <td><a href='/olympic-winners/detail.php/?id=".$person->getId()."'>" .
-                            $person->getName() .
-                            "</a>
+                        <td><a href='/olympic-winners/detail.php/?id=" . $person->getId() . "'>" .
+                        $person->getName() .
+                        "</a>
                         </td>
-                        <td><a href='/olympic-winners/detail.php/?id=".$person->getId()."'>" .
-                            $person->getSurname() .
-                            "</a>
+                        <td><a href='/olympic-winners/detail.php/?id=" . $person->getId() . "'>" .
+                        $person->getSurname() .
+                        "</a>
+                        </td>                        
+                        <td>" .
+                        $person->getPlacings() .
+                        "</td>
+                        <td>
                         </td>
-                        <td>".
-                            $person->getYear() .
-                        "</td>
-                        <td>" .
-                            $person->getCity() .
-                        "</td>
-                        <td>" .
-                            $person->getType() .
-                        "</td>
-                        <td>" .
-                            $person->getDiscipline() .
-                        "</td>
-                    </tr>
+                        <td>                         
+                        </td>
                     ";
                 }
                 ?>

@@ -15,7 +15,7 @@ $stm = $conn->prepare("SELECT osoby.id, osoby.name AS name, osoby.surname AS sur
                                 JOIN oh
                                     on umiestnenia.oh_id = oh.id
                              WHERE birth_country = 'Slovensko'
-                             ORDER BY ".$collum . " " . $order);
+                             ORDER BY " . $collum . " " . $order);
 $stm->execute();
 
 $stm->setFetchMode(PDO::FETCH_CLASS, "Person");

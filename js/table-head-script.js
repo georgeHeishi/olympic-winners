@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
         orders[item.id] = '';
         item.addEventListener("click", (event) => {
             Object.keys(orders).forEach(element => {
-                console.log(element)
                 if(event.target.id === element){
                     orders[event.target.id] = (orders[event.target.id] === 'ASC') ? 'DESC' : 'ASC';
                 }else{
@@ -17,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 + event.target.id
                 + '&order='
                 + orders[event.target.id];
+
             fetch(url)
                 .then((response) => response.json())
                 .then((data) => {
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 "<td><a href='/olympic-winners/detail.php/?id=" +item.id+ "'>" +
                                     item.name +
                                 "</a></td>" +
-                                "<td<a href='/olympic-winners/detail.php/?id=" +item.id+ "'>" +
+                                "<td><a href='/olympic-winners/detail.php/?id=" +item.id+ "'>" +
                                     item.surname +
                                 "</a></td>" +
                                 "<td>" +
