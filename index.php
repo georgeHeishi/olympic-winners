@@ -34,17 +34,11 @@ $people = $stm->fetchAll();
 </head>
 <body>
 <div class="container">
-    <div class="row mt-3 mb-3">
-        <header class="col-lg">
-            <h1 id="main-branding">Olympijskí víťazi </h1>
-        </header>
-        <hr>
-    </div>
+    <?php include('./view/header.php') ?>
+
     <div class="row mt-5">
         <main class="col-lg site-content">
-            <div class="mb-5">
-                <a href="/olympic-winners/best10.php">Top 10</a>
-            </div>
+
             <table class="table table-striped table-dark">
                 <thead>
                 <tr class="table-head">
@@ -73,25 +67,25 @@ $people = $stm->fetchAll();
                 foreach ($people as $person) {
                     echo "
                     <tr>
-                        <td><a href='/olympic-winners/detail.php/?id=".$person->getId()."'>" .
-                            $person->getName() .
-                            "</a>
+                        <td><a href='/olympic-winners/detail.php/?id=" . $person->getId() . "'>" .
+                        $person->getName() .
+                        "</a>
                         </td>
-                        <td><a href='/olympic-winners/detail.php/?id=".$person->getId()."'>" .
-                            $person->getSurname() .
-                            "</a>
+                        <td><a href='/olympic-winners/detail.php/?id=" . $person->getId() . "'>" .
+                        $person->getSurname() .
+                        "</a>
                         </td>
-                        <td>".
-                            $person->getYear() .
+                        <td>" .
+                        $person->getYear() .
                         "</td>
                         <td>" .
-                            $person->getCity() .
+                        $person->getCity() .
                         "</td>
                         <td>" .
-                            $person->getType() .
+                        $person->getType() .
                         "</td>
                         <td>" .
-                            $person->getDiscipline() .
+                        $person->getDiscipline() .
                         "</td>
                     </tr>
                     ";
@@ -102,16 +96,9 @@ $people = $stm->fetchAll();
         </main>
     </div>
 </div>
-<footer class="site-footer">
-    <div class="container">
-        <hr>
-        <ul>
-            <li><p>Juraj Lapčák</p></li>
-            <li><p>AIS: 97855</p></li>
-            <li><a class="link-text" href="mailto:lapcakjuraj@gmail.com">lapcakjuraj@gmail.com</a></li>
-        </ul>
-    </div>
-</footer>
+
+<?php include('./view/footer.php') ?>
+
 </body>
 </html>
 

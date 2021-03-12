@@ -34,12 +34,8 @@ $peopleRanking = $stm->fetchAll();
 </head>
 <body>
 <div class="container">
-    <div class="row mt-3 mb-3">
-        <header class="col-lg">
-            <h1 id="main-branding">Olympijskí víťazi </h1>
-        </header>
-        <hr>
-    </div>
+    <?php include('./view/header.php') ?>
+
     <div class="row mt-5">
         <main class="col-lg site-content">
             <table class="table table-striped table-dark">
@@ -91,16 +87,9 @@ $peopleRanking = $stm->fetchAll();
         </main>
     </div>
 </div>
-<footer class="site-footer">
-    <div class="container">
-        <hr>
-        <ul>
-            <li><p>Juraj Lapčák</p></li>
-            <li><p>AIS: 97855</p></li>
-            <li><a class="link-text" href="mailto:lapcakjuraj@gmail.com">lapcakjuraj@gmail.com</a></li>
-        </ul>
-    </div>
-</footer>
+
+<?php include('./view/footer.php') ?>
+
 </body>
 </html>
 
