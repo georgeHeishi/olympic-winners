@@ -1,25 +1,13 @@
 <?php
-require_once "../helpers/Database.php";
-require_once "../models/Person.php";
+require_once(__DIR__ . "/../classes/controllers/PersonController.php");
+require_once(__DIR__ . "/../classes/models/Person.php");
 
-$collum = (!strcmp($_GET['collum'], 'type')) ? "type, year" : $_GET['collum'];
 $order = $_GET['order'];
+$column = (!strcmp($_GET['column'], 'type')) ? "type " . $order . ", year " . $order : $_GET['column'] . " " . $order;
 
-$db = new Database();
-$conn = $db->getConnection();
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$stm = $conn->prepare("SELECT osoby.id, osoby.name AS name, osoby.surname AS surname, oh.year AS year, oh.city AS city, oh.type AS type, umiestnenia.discipline AS discipline
-                             FROM osoby
-                                JOIN umiestnenia
-                                    on osoby.id = umiestnenia.person_id
-                                JOIN oh
-                                    on umiestnenia.oh_id = oh.id
-                             WHERE birth_country = 'Slovensko'
-                             ORDER BY " . $collum . " " . $order);
-$stm->execute();
+$personController = new PersonController();
 
-$stm->setFetchMode(PDO::FETCH_CLASS, "Person");
-$people = $stm->fetchAll();
+$people = $personController->sortByColumn($column);
 $results = array();
 foreach ($people as $person) {
     array_push($results, $person->toArray());
@@ -27,6 +15,6 @@ foreach ($people as $person) {
 $response = array(
     "status" => "success",
     "error" => false,
-    "results" => json_encode($results)
+    "results" => json_encode($results),
 );
 echo json_encode($response);

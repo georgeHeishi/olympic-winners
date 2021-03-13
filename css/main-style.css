@@ -17,6 +17,9 @@ body {
 h1, a, p, label, input {
     font-family: Roboto, sans-serif;
 }
+a:hover{
+    cursor: pointer;
+}
 .nav-item{
     text-decoration: none;
     font-size: x-large;

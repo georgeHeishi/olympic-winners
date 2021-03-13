@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            let url = 'https://wt98.fei.stuba.sk/olympic-winners/api/orderApi.php/?collum='
+            let url = 'https://wt98.fei.stuba.sk/olympic-winners/api/orderApi.php/?column='
                 + event.target.id
                 + '&order='
                 + orders[event.target.id];

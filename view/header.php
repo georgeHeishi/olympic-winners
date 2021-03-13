@@ -7,7 +7,7 @@
             Domov
         </a>
         <a class="p-2 nav-item" href="/olympic-winners/best10.php">
-            Top 10
+            Top10
         </a>
     </nav>
     <hr>

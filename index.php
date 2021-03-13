@@ -1,22 +1,10 @@
 <?php
-require_once "helpers/Database.php";
-require_once "models/Person.php";
+include('./view/errorDisplay.php');
+require_once "./classes/models/Person.php";
+require_once "./classes/controllers/PersonController.php";
 
-$db = new Database();
-
-$conn = $db->getConnection();
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$stm = $conn->prepare("SELECT osoby.id, osoby.name, osoby.surname, oh.year, oh.city, oh.type, umiestnenia.discipline
-                            FROM osoby
-                            JOIN umiestnenia
-                            on osoby.id = umiestnenia.person_id
-                            JOIN oh
-                            on umiestnenia.oh_id = oh.id
-                            WHERE birth_country = 'Slovensko'");
-$stm->execute();
-
-$stm->setFetchMode(PDO::FETCH_CLASS, "Person");
-$people = $stm->fetchAll();
+$personController = new PersonController();
+$people = $personController->getAllPeople();
 ?>
 <!DOCTYPE html>
 <html lang="sk">
@@ -65,30 +53,7 @@ $people = $stm->fetchAll();
                 <tbody id="winners-body">
                 <?php
                 foreach ($people as $person) {
-                    echo "
-                    <tr>
-                        <td><a href='/olympic-winners/detail.php/?id=" . $person->getId() . "'>" .
-                        $person->getName() .
-                        "</a>
-                        </td>
-                        <td><a href='/olympic-winners/detail.php/?id=" . $person->getId() . "'>" .
-                        $person->getSurname() .
-                        "</a>
-                        </td>
-                        <td>" .
-                        $person->getYear() .
-                        "</td>
-                        <td>" .
-                        $person->getCity() .
-                        "</td>
-                        <td>" .
-                        $person->getType() .
-                        "</td>
-                        <td>" .
-                        $person->getDiscipline() .
-                        "</td>
-                    </tr>
-                    ";
+                    echo $person->getRow();
                 }
                 ?>
                 </tbody>
