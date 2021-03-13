@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__ . "/../helpers/Database.php");
-
+require_once(__DIR__ . "/../models/PersonDetail.php");
+require_once(__DIR__ . "/../models/Placement.php");
 class PersonController
 {
     private ?PDO $conn;
@@ -23,6 +24,27 @@ class PersonController
 
         $stm->setFetchMode(PDO::FETCH_CLASS, "Person");
         return $stm->fetchAll();
+    }
+
+    public function getById($id)
+    {
+        $stm = $this->conn->prepare("SELECT osoby.* FROM osoby WHERE id=:id");
+        $stm->bindParam(":id",$id);
+        $stm->execute();
+        $stm->setFetchMode(PDO::FETCH_CLASS, "PersonDetail");
+        $person = $stm->fetch();
+        $personId = $person->getId();
+
+        $stm = $this->conn->prepare("SELECT u.*, oh.type, oh.year,oh.city 
+                                            FROM umiestnenia u 
+                                            JOIN oh ON u.oh_id = oh.id 
+                                            WHERE u.person_id=:personId");
+        $stm->bindParam(":personId", $personId, PDO::PARAM_INT);
+        $stm->execute();
+        $placements = $stm->fetchAll(PDO::FETCH_CLASS, "Placement");
+
+        $person->setPlacements($placements);
+        return $person;
     }
 
     public function sortByColumn($column): array

@@ -26,7 +26,6 @@ $people = $personController->getAllPeople();
 
     <div class="row mt-5">
         <main class="col-lg site-content">
-
             <table class="table table-striped table-dark">
                 <thead>
                 <tr class="table-head">
