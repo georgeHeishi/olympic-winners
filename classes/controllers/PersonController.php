@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__ . "/../helpers/Database.php");
 require_once(__DIR__ . "/../models/PersonDetail.php");
+require_once(__DIR__ . "/../models/Person.php");
 require_once(__DIR__ . "/../models/Placement.php");
 
 class PersonController
@@ -23,6 +24,14 @@ class PersonController
                                             WHERE birth_country = 'Slovensko'");
         $stm->execute();
 
+        $stm->setFetchMode(PDO::FETCH_CLASS, "Person");
+        return $stm->fetchAll();
+    }
+
+    public function getAllIncomplete(): array
+    {
+        $stm = $this->conn->prepare("SELECT id, name, surname FROM osoby");
+        $stm->execute();
         $stm->setFetchMode(PDO::FETCH_CLASS, "Person");
         return $stm->fetchAll();
     }
@@ -100,13 +109,17 @@ class PersonController
         $stm->execute();
     }
 
-    public function insertPerson(PersonDetail $person): string
+    public function insertPerson(PersonDetail $person): ?string
     {
         $stm = $this->conn->prepare("insert into osoby (name, surname, birth_date, birth_place, birth_country, death_date, death_place, death_country) 
                                             values (:name, :surname, :birth_date, :birth_place, :birth_country, :death_date, :death_place, :death_country)");
         $this->insertParameters($person, $stm);
-        $stm->execute();
-        return $this->conn->lastInsertId();
+        try {
+            $stm->execute();
+            return $this->conn->lastInsertId();
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
     private function insertParameters(PersonDetail $person, $stm)
@@ -119,7 +132,6 @@ class PersonController
         $death_date = $person->getDeathDate();
         $death_place = $person->getDeathPlace();
         $death_country = $person->getDeathCountry();
-        var_dump($person);
         $stm->bindParam(":name", $name, PDO::PARAM_STR);
         $stm->bindParam(":surname", $surname, PDO::PARAM_STR);
         $stm->bindParam(":birth_date", $birth_date, PDO::PARAM_STR);
