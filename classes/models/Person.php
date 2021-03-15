@@ -121,7 +121,7 @@ class Person
                     <td>" .
                         $this->placings .
                     "</td>
-                    <td><a id='modify" . $this->id . "' class='modify'>
+                    <td><a id='modify" . $this->id . "' class='modify' href='/olympic-winners/edit.php/?id=" . $this->id . "'>
                         Upraviť
                     </a></td>
                     <td><a id='remove" . $this->id . "' class='remove'>  

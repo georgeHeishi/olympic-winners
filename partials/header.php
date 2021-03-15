@@ -9,6 +9,9 @@
         <a class="p-2 nav-item" href="/olympic-winners/best10.php">
             Top10
         </a>
+        <a class="p-2 nav-item" href="/olympic-winners/addPerson.php" style="margin-left: auto">
+            AddPerson
+        </a>
     </nav>
     <hr>
 </div>

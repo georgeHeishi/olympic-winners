@@ -2,6 +2,7 @@
 require_once(__DIR__ . "/../helpers/Database.php");
 require_once(__DIR__ . "/../models/PersonDetail.php");
 require_once(__DIR__ . "/../models/Placement.php");
+
 class PersonController
 {
     private ?PDO $conn;
@@ -28,23 +29,27 @@ class PersonController
 
     public function getById($id)
     {
-        $stm = $this->conn->prepare("SELECT osoby.* FROM osoby WHERE id=:id");
-        $stm->bindParam(":id",$id);
-        $stm->execute();
-        $stm->setFetchMode(PDO::FETCH_CLASS, "PersonDetail");
-        $person = $stm->fetch();
-        $personId = $person->getId();
+        try {
+            $stm = $this->conn->prepare("SELECT osoby.* FROM osoby WHERE id=:id");
+            $stm->bindParam(":id", $id);
+            $stm->execute();
+            $stm->setFetchMode(PDO::FETCH_CLASS, "PersonDetail");
+            $person = $stm->fetch();
+            $personId = $person->getId();
 
-        $stm = $this->conn->prepare("SELECT u.*, oh.type, oh.year,oh.city 
-                                            FROM umiestnenia u 
-                                            JOIN oh ON u.oh_id = oh.id 
-                                            WHERE u.person_id=:personId");
-        $stm->bindParam(":personId", $personId, PDO::PARAM_INT);
-        $stm->execute();
-        $placements = $stm->fetchAll(PDO::FETCH_CLASS, "Placement");
+            $stm = $this->conn->prepare("SELECT u.*, oh.type, oh.year,oh.city 
+                                                FROM umiestnenia u 
+                                                JOIN oh ON u.oh_id = oh.id 
+                                                WHERE u.person_id=:personId");
+            $stm->bindParam(":personId", $personId, PDO::PARAM_INT);
+            $stm->execute();
+            $placements = $stm->fetchAll(PDO::FETCH_CLASS, "Placement");
 
-        $person->setPlacements($placements);
-        return $person;
+            $person->setPlacements($placements);
+            return $person;
+        } catch (Error $e) {
+            return null;
+        }
     }
 
     public function sortByColumn($column): array
@@ -76,6 +81,53 @@ class PersonController
 
         $stm->setFetchMode(PDO::FETCH_CLASS, "Person");
         return $stm->fetchAll();
+    }
+
+    public function editPerson(PersonDetail $person)
+    {
+        $stm = $this->conn->prepare("update osoby set name=:name, 
+                                                            surname=:surname,       
+                                                            birth_date=:birth_date, 
+                                                            birth_place=:birth_place,   
+                                                            birth_country=:birth_country,
+                                                            death_date=:death_date,
+                                                            death_place=:death_place,   
+                                                            death_country=:death_country 
+                                            where id = :id;");
+        $id = $person->getId();
+        $stm->bindParam(":id", $id, PDO::PARAM_INT);
+        $this->insertParameters($person, $stm);
+        $stm->execute();
+    }
+
+    public function insertPerson(PersonDetail $person): string
+    {
+        $stm = $this->conn->prepare("insert into osoby (name, surname, birth_date, birth_place, birth_country, death_date, death_place, death_country) 
+                                            values (:name, :surname, :birth_date, :birth_place, :birth_country, :death_date, :death_place, :death_country)");
+        $this->insertParameters($person, $stm);
+        $stm->execute();
+        return $this->conn->lastInsertId();
+    }
+
+    private function insertParameters(PersonDetail $person, $stm)
+    {
+        $name = $person->getName();
+        $surname = $person->getSurname();
+        $birth_date = $person->getBirthDate();
+        $birth_place = $person->getBirthPlace();
+        $birth_country = $person->getBirthCountry();
+        $death_date = $person->getDeathDate();
+        $death_place = $person->getDeathPlace();
+        $death_country = $person->getDeathCountry();
+        var_dump($person);
+        $stm->bindParam(":name", $name, PDO::PARAM_STR);
+        $stm->bindParam(":surname", $surname, PDO::PARAM_STR);
+        $stm->bindParam(":birth_date", $birth_date, PDO::PARAM_STR);
+        $stm->bindParam(":birth_place", $birth_place, PDO::PARAM_STR);
+        $stm->bindParam(":birth_country", $birth_country, PDO::PARAM_STR);
+        $stm->bindParam(":death_date", $death_date, PDO::PARAM_STR);
+        $stm->bindParam(":death_place", $death_place, PDO::PARAM_STR);
+        $stm->bindParam(":death_country", $death_country, PDO::PARAM_STR);
     }
 
     public function removeById($id): bool

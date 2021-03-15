@@ -1,11 +1,14 @@
 <?php
-include('./view/errorDisplay.php');
+include('./partials/errorDisplay.php');
 require_once "./classes/models/PersonDetail.php";
 require_once "./classes/controllers/PersonController.php";
 
 $id = $_GET['id'] ?? null;
 $personController = new PersonController();
-$personDetail = $personController->getById($id);
+$person = $personController->getById($id);
+if (is_null($person)) {
+    header("Location: https://wt98.fei.stuba.sk/olympic-winners/best10.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="sk">
@@ -16,36 +19,40 @@ $personDetail = $personController->getById($id);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="../css/main-style.css" rel="stylesheet">
     <link href="../css/detail-style.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
-    <?php include('./view/header.php') ?>
+    <?php include('./partials/header.php') ?>
     <div class="row mt-5">
         <main class="col-lg site-content">
             <h3>
-                <?php echo "ID." . $personDetail->getId() ." " . $personDetail->getName() . " " . $personDetail->getSurname() ?>
+                <?php echo "ID." . $person->getId() . " " . $person->getName() . " " . $person->getSurname() ?>
             </h3>
             <div class="d-flex flex-row">
                 <ul class="detail p-2 mt-4">
                     <li>
-                        Dátum narodenia:<?php echo $personDetail->getBirthDay(); ?>
+                        Dátum narodenia: <?php echo $person->getBirthDate(); ?>
                     </li>
                     <li>
-                        Miesto narodenia: <?php echo $personDetail->getBirthPlace(); ?>
+                        Miesto narodenia: <?php echo $person->getBirthPlace(); ?>
                     </li>
                     <li>
-                        Krajina narodenia: <?php echo $personDetail->getBirthCountry(); ?>
+                        Krajina narodenia: <?php echo $person->getBirthCountry(); ?>
                     </li>
                 </ul>
                 <ul class="detail p-2 mt-4">
-                    <?php if (!empty($personDetail->getDeathDay())) {
-                        echo "<li> Dátum úmrtia" . $personDetail->getDeathDay() . "</li>";
-                        echo "<li> Miesto úmrtia" . $personDetail->getDeathPlace() . "</li>";
-                        echo "<li> Krajina úmrtia" . $personDetail->getDeathCountry() . "</li>";
-                    } ?>
+                    <?php if (!empty($person->getDeathDate())) {
+                        echo "<li> Dátum úmrtia: " . $person->getDeathDate() . "</li>";
+                    }
+                    if (!empty($person->getDeathPlace())) {
+                        echo "<li> Miesto úmrtia: " . $person->getDeathPlace() . "</li>";
+                    }
+                    if (!empty($person->getDeathCountry())) {
+                        echo "<li> Krajina úmrtia: " . $person->getDeathCountry() . "</li>";
+                    }
+                    ?>
                 </ul>
             </div>
             <table class="mt-5 table table-striped table-dark">
@@ -70,7 +77,7 @@ $personDetail = $personController->getById($id);
                 </thead>
                 <tbody>
                 <?php
-                foreach ($personDetail->getPlacements() as $placement) {
+                foreach ($person->getPlacements() as $placement) {
                     echo $placement->getRow();
                 }
                 ?>
@@ -79,7 +86,6 @@ $personDetail = $personController->getById($id);
         </main>
     </div>
 </div>
-
-<?php include('./view/footer.php') ?>
+<?php include('./partials/footer.php') ?>
 </body>
 </html>

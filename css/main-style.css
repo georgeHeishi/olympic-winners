@@ -17,6 +17,9 @@ body {
 h1, a, p, label, input {
     font-family: Roboto, sans-serif;
 }
+input{
+    color: #0f0f0f
+}
 a:hover{
     cursor: pointer;
 }
